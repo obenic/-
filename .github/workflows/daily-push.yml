@@ -11,15 +11,18 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v2
 
-    - name: Random Quote
+    - name: Get Random Quote
       id: quote
-      uses: jakejarvis/random-quote@v1
+      run: |
+          QUOTE=$(curl -s https://github-readme-quotes-returns.vercel.app/quote)
+          echo "QUOTE=$QUOTE" >> $GITHUB_ENV
       
     - name: Update README
       run: |
-        echo "${{ steps.quote.outputs.value }}" >> README.md
-        git config --global user.name "Your Name"
-        git config --global user.email "xuzz089@gmail.com"
-        git add .
-        git commit -m "Update README with a new quote - $(date +"%Y-%m-%d")"
-        git push
+          echo "## Random Quote of the Day" >> README.md
+          echo "${{ env.QUOTE }}" >> README.md
+          git config --global user.name "Your Name"
+          git config --global user.email "your-email@example.com"
+          git add README.md
+          git commit -m "Update README with a new quote - $(date +"%Y-%m-%d")"
+          git push
